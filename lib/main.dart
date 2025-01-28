@@ -1,262 +1,3 @@
-// import 'dart:math';
-//
-// import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
-//
-// void main() {
-//   runApp(const MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       home: const DockPage(),
-//     );
-//   }
-// }
-//
-// // Main Dock Page
-// class DockPage extends StatefulWidget {
-//   const DockPage({super.key});
-//
-//   @override
-//   _DockPageState createState() => _DockPageState();
-// }
-//
-// class _DockPageState extends State<DockPage> {
-//   // Sample list of dock apps with corresponding icons
-//   List<Map<String, String>> dockApps = [
-//     {"icon": "assets/start.png", "name": "Start"},
-//     {"icon": "assets/Launchpad.png", "name": "Launchpad"},
-//     {"icon": "assets/calendar.png", "name": "Calendar"},
-//     {"icon": "assets/notes.png", "name": "Notes"},
-//     {"icon": "assets/settings_macos.png", "name": "Settings"},
-//     {"icon": "assets/google_chrome_macos.png", "name": "Chrome"},
-//     {"icon": "assets/xcode_icon.png", "name": "X Code"},
-//     {"icon": "assets/apple_music_icon.png", "name": "Apple Music"},
-//   ];
-//
-//   // Function to handle the drag-and-drop action
-//   void handleDockAppDrag(int fromIndex, int toIndex) {
-//     setState(() {
-//       final app =
-//           dockApps.removeAt(fromIndex); // Remove the app from its old position
-//       dockApps.insert(toIndex, app); // Insert the app at its new position
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Stack(
-//         children: [
-//           // Background image for the dock
-//           Container(
-//             decoration: const BoxDecoration(
-//               image: DecorationImage(
-//                 image: AssetImage("assets/macos_bg.jpg"),
-//                 fit: BoxFit.cover,
-//               ),
-//             ),
-//           ),
-//
-//           Align(
-//             alignment: Alignment.topRight,
-//             child: Padding(
-//               padding: const EdgeInsets.only(top: 30, right: 10),
-//               child: SizedBox(
-//                 height: 300,
-//                 width: 300,
-//                 child: ClockWidget(),
-//               ),
-//             ),
-//           ),
-//           // Dock Area
-//           Align(
-//             alignment: Alignment.bottomCenter,
-//             child: HoverableDock(
-//               dockApps: dockApps,
-//               onDockAppDrag: handleDockAppDrag,
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-//
-// // The dock containing app icons
-// class HoverableDock extends StatelessWidget {
-//   final List<Map<String, String>> dockApps;
-//   final Function(int fromIndex, int toIndex) onDockAppDrag;
-//
-//   const HoverableDock({
-//     required this.dockApps,
-//     required this.onDockAppDrag,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       margin: const EdgeInsets.only(bottom: 10),
-//       padding: const EdgeInsets.symmetric(horizontal: 10),
-//       decoration: BoxDecoration(
-//         color: Colors.black.withOpacity(0.8),
-//         borderRadius: BorderRadius.circular(15),
-//         border: Border.all(color: Colors.white.withOpacity(0.2)),
-//       ),
-//       child: SingleChildScrollView(
-//         scrollDirection: Axis.horizontal, // Enable horizontal scrolling
-//         child: Row(
-//           mainAxisSize: MainAxisSize.min,
-//           children: dockApps.asMap().entries.map((entry) {
-//             int index = entry.key; // Current index of the app
-//             Map<String, String> app = entry.value; // App data
-//             return DraggableDockButton(
-//               app: app,
-//               onDockAppDrag: onDockAppDrag, // Pass the drag function
-//               index: index,
-//               dockAppsLength:
-//                   dockApps.length, // Pass the length of the dockApps
-//             );
-//           }).toList(),
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// // Draggable Dock Button
-// class DraggableDockButton extends StatefulWidget {
-//   final Map<String, String> app; // App data
-//   final Function(int fromIndex, int toIndex)
-//       onDockAppDrag; // Function to handle drag-and-drop
-//   final int index; // Current index
-//   final int dockAppsLength;
-//
-//   const DraggableDockButton({
-//     super.key,
-//     required this.app,
-//     required this.onDockAppDrag,
-//     required this.index,
-//     required this.dockAppsLength,
-//   });
-//
-//   @override
-//   _DraggableDockButtonState createState() => _DraggableDockButtonState();
-// }
-//
-// class _DraggableDockButtonState extends State<DraggableDockButton> {
-//   bool isHovered = false; // Track hover state
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     double iconSize = isHovered ? 70.0 : 50.0; // Increase size on hover
-//
-//     return MouseRegion(
-//       onEnter: (_) => setState(() => isHovered = true), // Mouse enters
-//       onExit: (_) => setState(() => isHovered = false), // Mouse exits
-//       child: Draggable<int>(
-//         data: widget.index, // Pass the current index for dragging
-//         feedback: Material(
-//           color: Colors.transparent,
-//           child: Image.asset(widget.app["icon"]!,
-//               width: iconSize, height: iconSize), // Dragged icon
-//         ),
-//         childWhenDragging: widget.index == 0 // Keep the 0th icon intact
-//             ? Container() // Optionally, you may want an empty container
-//             : Opacity(
-//                 opacity: 0.5, // Make original icon semi-transparent
-//                 child: Image.asset(widget.app["icon"]!,
-//                     width: 50, height: 50), // Original icon size
-//               ),
-//         onDragEnd: (details) {
-//           // Add a condition to prevent dragging the first item
-//           if (widget.index == 0)
-//             return; // Return early if dragging the first item
-//
-//           final RenderBox renderBox =
-//               context.findRenderObject() as RenderBox; // Get the render box
-//           double dx = renderBox
-//               .globalToLocal(details.offset)
-//               .dx; // Calculate drag X position
-//
-//           // Width of each item in the dock for index calculation
-//           double itemWidth = 70; // Total width including margins
-//           int newIndex =
-//               (dx / itemWidth).floor(); // Calculate target index based on drag
-//
-//           // Clamp new index to be within the range of items in the dock
-//           newIndex = newIndex.clamp(
-//               1,
-//               widget.dockAppsLength -
-//                   1); // Only allow moving within 1 to length - 1
-//
-//           // Move the dragged item if the new index is different from the current index
-//           if (widget.index != newIndex) {
-//             widget.onDockAppDrag(
-//                 widget.index, newIndex); // Update order of items
-//           }
-//         },
-//         child: DragTarget<int>(
-//           builder: (context, candidateData, rejectedData) {
-//             return Tooltip(
-//               // Add Tooltip widget
-//               message: widget.app["name"]!, // Set message to app name
-//               verticalOffset:
-//                   20, // Optional: adjust vertical positioning of the tooltip
-//               child: Container(
-//                 margin: const EdgeInsets.all(5),
-//                 child: Image.asset(
-//                   widget.app["icon"]!,
-//                   width: iconSize, // Use dynamic size based on hover
-//                   height: iconSize, // Use dynamic size based on hover
-//                 ), // Display app icon
-//               ),
-//             );
-//           },
-//           onAccept: (data) {
-//             if (data != widget.index && data != 0) {
-//               // Prevent accepting from the 0 index
-//               widget.onDockAppDrag(data, widget.index); // Update order of items
-//             }
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-//
-// // CommentBox widget to display the app name in the dock
-// class CommentBox extends StatelessWidget {
-//   final String text;
-//
-//   const CommentBox({Key? key, required this.text}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.all(1.0), // Padding around the text
-//       decoration: BoxDecoration(
-//         color: Colors.white60.withOpacity(0.5), // Semi-transparent background
-//         borderRadius: BorderRadius.circular(4.0), // Rounded corners
-//       ),
-//       child: Text(
-//         text,
-//         textAlign: TextAlign.center, // Center the text
-//         style: const TextStyle(
-//             color: Colors.black87, fontSize: 12, fontWeight: FontWeight.bold),
-//         overflow: TextOverflow.ellipsis, // Prevent overflow text
-//         maxLines: 1, // Limit to one line
-//       ),
-//     );
-//   }
-// }
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -347,7 +88,7 @@ class _DockPageState extends State<DockPage> {
   }
 }
 
-class HoverableDock extends StatelessWidget {
+class HoverableDock extends StatefulWidget {
   final List<Map<String, String>> dockApps;
   final Function(int fromIndex, int toIndex) onDockAppDrag;
 
@@ -357,27 +98,73 @@ class HoverableDock extends StatelessWidget {
   });
 
   @override
+  _HoverableDockState createState() => _HoverableDockState();
+}
+
+class _HoverableDockState extends State<HoverableDock> {
+  double? mouseXPosition;
+  late List<Map<String, String>> dockApps;
+
+  @override
+  void initState() {
+    super.initState();
+    dockApps =
+        List.from(widget.dockApps); // Make a mutable copy for rearrangement
+  }
+
+  void rearrangeApps(int fromIndex, int toIndex) {
+    setState(() {
+      final app = dockApps.removeAt(fromIndex);
+      dockApps.insert(toIndex, app);
+    });
+    widget.onDockAppDrag(fromIndex, toIndex);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
+    return MouseRegion(
+      onHover: (event) {
+        setState(() {
+          mouseXPosition = event.localPosition.dx;
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          mouseXPosition = null;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: Colors.white.withOpacity(0.2)),
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: dockApps.asMap().entries.map((entry) {
             int index = entry.key;
             Map<String, String> app = entry.value;
-            return DraggableDockButton(
-              app: app,
-              onDockAppDrag: onDockAppDrag,
-              index: index,
-              dockAppsLength: dockApps.length,
+
+            // Calculate proximity-based scaling
+            double scale = 1.0;
+            if (mouseXPosition != null) {
+              double distance = (mouseXPosition! - (index * 70 + 35)).abs();
+              scale = max(1.0, 1.5 - (distance / 150));
+            }
+
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              margin: const EdgeInsets.all(5),
+              child: DraggableDockButton(
+                app: app,
+                onDockAppDrag: rearrangeApps,
+                index: index,
+                dockAppsLength: dockApps.length,
+                scale: scale,
+              ),
             );
           }).toList(),
         ),
@@ -386,11 +173,12 @@ class HoverableDock extends StatelessWidget {
   }
 }
 
-class DraggableDockButton extends StatefulWidget {
+class DraggableDockButton extends StatelessWidget {
   final Map<String, String> app;
   final Function(int fromIndex, int toIndex) onDockAppDrag;
   final int index;
   final int dockAppsLength;
+  final double scale;
 
   const DraggableDockButton({
     super.key,
@@ -398,69 +186,59 @@ class DraggableDockButton extends StatefulWidget {
     required this.onDockAppDrag,
     required this.index,
     required this.dockAppsLength,
+    required this.scale,
   });
 
   @override
-  _DraggableDockButtonState createState() => _DraggableDockButtonState();
-}
-
-class _DraggableDockButtonState extends State<DraggableDockButton> {
-  bool isHovered = false;
-
-  @override
   Widget build(BuildContext context) {
-    double iconSize = isHovered ? 70.0 : 50.0;
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => isHovered = true),
-      onExit: (_) => setState(() => isHovered = false),
-      child: Draggable<int>(
-        data: widget.index,
-        feedback: Material(
-          color: Colors.transparent,
-          child: Image.asset(widget.app["icon"]!,
-              width: iconSize, height: iconSize),
+    return Draggable<int>(
+      data: index,
+      feedback: Material(
+        color: Colors.transparent,
+        child: Image.asset(
+          app["icon"]!,
+          width: 70 * scale,
+          height: 70 * scale,
         ),
-        childWhenDragging: Opacity(
-          opacity: 0.5,
-          child: Image.asset(widget.app["icon"]!, width: 50, height: 50),
-        ),
-        onDragEnd: (details) {
-          if (widget.index == 0) return;
-
-          final RenderBox renderBox = context.findRenderObject() as RenderBox;
-          double dx = renderBox.globalToLocal(details.offset).dx;
-
-          double itemWidth = 70;
-          int newIndex = (dx / itemWidth).floor();
-
-          newIndex = newIndex.clamp(1, widget.dockAppsLength - 1);
-
-          if (widget.index != newIndex) {
-            widget.onDockAppDrag(widget.index, newIndex);
+      ),
+      childWhenDragging: Opacity(
+        opacity: 0.5,
+        child: Image.asset(app["icon"]!, width: 50, height: 50),
+      ),
+      child: DragTarget<int>(
+        builder: (context, candidateData, rejectedData) {
+          return Tooltip(
+            message: app["name"]!,
+            verticalOffset: 20,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween<double>(begin: 1.0, end: scale),
+              duration: const Duration(milliseconds: 200),
+              builder: (context, value, child) {
+                return Container(
+                  margin: const EdgeInsets.all(5),
+                  child: Image.asset(
+                    app["icon"]!,
+                    width: 50 * value,
+                    height: 50 * value,
+                  ),
+                );
+              },
+            ),
+          );
+        },
+        onWillAccept: (fromIndex) {
+          // Dynamically reorder while dragging
+          if (fromIndex != index) {
+            onDockAppDrag(fromIndex!, index);
+          }
+          return true; // Accept the drag
+        },
+        onAccept: (fromIndex) {
+          // Finalize drag when dropped
+          if (fromIndex != index) {
+            onDockAppDrag(fromIndex, index);
           }
         },
-        child: DragTarget<int>(
-          builder: (context, candidateData, rejectedData) {
-            return Tooltip(
-              message: widget.app["name"]!,
-              verticalOffset: 20,
-              child: Container(
-                margin: const EdgeInsets.all(5),
-                child: Image.asset(
-                  widget.app["icon"]!,
-                  width: iconSize,
-                  height: iconSize,
-                ),
-              ),
-            );
-          },
-          onAccept: (data) {
-            if (data != widget.index && data != 0) {
-              widget.onDockAppDrag(data, widget.index);
-            }
-          },
-        ),
       ),
     );
   }
