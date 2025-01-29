@@ -68,7 +68,7 @@ class _DockPageState extends State<DockPage> {
             child: Padding(
               padding: const EdgeInsets.only(top: 30, right: 10),
               child: SizedBox(
-                height: MediaQuery.of(context).size.height / 2.8,
+                height: MediaQuery.of(context).size.height / 3,
                 width: MediaQuery.of(context).size.width / 8,
                 child: ClockWidget(),
               ),
